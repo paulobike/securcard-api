@@ -34,8 +34,7 @@ const sendConfirmation = (req, res, next) => {
                 let otp = {
                     code: token,
                     type: 'email_confirmation',
-                    user_id,
-                    created_at: new Date()
+                    user_id
                 }
                 connection.query(`
                     INSERT INTO otps SET ?

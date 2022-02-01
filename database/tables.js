@@ -11,7 +11,7 @@ module.exports = () => {
                 password VARCHAR(255),
                 email VARCHAR(255),
                 email_verified Boolean DEFAULT false,
-                created_at TIMESTAMP,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY(id)
             )`, (err, result) => {
             if(err) console.log(err);
@@ -25,7 +25,7 @@ module.exports = () => {
                 front VARCHAR(255),
                 back VARCHAR(255),
                 user_id INT NOT NULL,
-                registered_at TIMESTAMP,
+                registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY(id),
                 FOREIGN KEY(user_id) REFERENCES users(id)
             )`, (err, result) => {
@@ -39,7 +39,7 @@ module.exports = () => {
                 type VARCHAR(255),
                 code VARCHAR(10),
                 user_id INT NOT NULL,
-                created_at TIMESTAMP,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY(id),
                 FOREIGN KEY(user_id) REFERENCES users(id)
             )`, (err, result) => {

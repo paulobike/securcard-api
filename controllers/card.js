@@ -80,8 +80,7 @@ const createCard = (req, res, next) => {
         let card = {
             name,
             front: '/cards/front/' + frontFile[0].filename,
-            back: '/cards/back/' + backFile[0].filename,
-            created_at: new Date()
+            back: '/cards/back/' + backFile[0].filename
         };
         pool.getConnection((err, connection) => {
             if( err ) {

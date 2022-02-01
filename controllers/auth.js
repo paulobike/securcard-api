@@ -69,7 +69,7 @@ const signUp = async (req, res, next) => {
             let count = userCount[0].count;
             if(count > 0) return(next(new Error('Email is already in use')));
             password = bcrypt.hashSync(password, 10);
-            let user = { email, name, password, registered_at: new Date() }
+            let user = { email, name, password }
             connection.query(`
                 INSERT INTO users SET ?
                 `, user, (err, result) => {

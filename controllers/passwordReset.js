@@ -29,8 +29,7 @@ const forgotPassword = (req, res, next) => {
                 let otp = {
                     code: token,
                     type: 'password_reset',
-                    user_id,
-                    created_at: new Date()
+                    user_id
                 }
                 connection.query(`
                     INSERT INTO otps SET ?
