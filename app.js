@@ -33,16 +33,16 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/cards', cardRoutes);
 app.use((error, req, res, next) => {
     res.json({
-        message: error.message,
-        status: Math.floor(error.status / 100) === 3? 'redirect' :'error',
-        status_code: error.status || 500
+        data: error.message,
+        message: Math.floor(error.status / 100) === 3? 'redirect' :'error',
+        status: error.status || 500
     });
 })
 app.use('*', (req, res) => {
     res.status(404).json({
-        message: 'Resource not found',
-        status: 'error',
-        status_code: 404
+        data: 'Resource not found',
+        message: 'error',
+        status: 404
     });
 });
 
