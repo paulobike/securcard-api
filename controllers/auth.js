@@ -33,7 +33,7 @@ const login = (req, res, next) => {
                 res.json({
                     data: {
                         auth_token: token,
-                        username: user.username
+                        email: user.email
                     },
                     message: user['email_verified'] == true ? 'Success' : 'Verify email address',
                     status: user['email_verified'] == true ? 200 : 300
