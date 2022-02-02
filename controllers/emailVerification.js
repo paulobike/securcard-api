@@ -112,8 +112,7 @@ const compareToken = async (req, res, next) => {
                             message: 'Email verified',
                             status: 200,
                             data: {
-                                email: user.email,
-                                name: user.name
+                                email: email,
                             }
                         });
                     });
