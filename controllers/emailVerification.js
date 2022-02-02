@@ -11,7 +11,7 @@ class Errorxxx extends Error {
 
 const sendConfirmation = (req, res, next) => {
     const email = req.query.email;
-    if(!email || !emailValidator(email)) return next(new Error('Invalid email'));
+    if(!email) return next(new Error('Invalid email'));
 
     pool.getConnection((err, connection) => {
         if( err ) {
