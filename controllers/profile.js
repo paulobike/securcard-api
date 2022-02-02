@@ -1,4 +1,5 @@
 const pool = require('../database/db-pool');
+const bcrypt = require('bcrypt');
 
 const updateProfile = (req, res, next) => {
     let userId = req.user.id;
