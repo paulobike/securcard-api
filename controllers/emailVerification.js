@@ -77,51 +77,56 @@ const compareToken = async (req, res, next) => {
     const email = req.body.email;
     if(!token) return next(new Errorxxx('Invalid token', 400));
     if(!email) return next(new Errorxxx('Invalid email', 400));
-
-    connection.query(`
-        SELECT * FROM otps
-        WHERE code = ?
-    `, [ token ], (err, otps, fields) => {
+    pool.getConnection((err, connection) => {
         if( err ) {
             console.log(err);
             return next(new Error('Something went wrong'));
         }
-        let otp = otps[0];
-        if(otp) {
-            let userId = otp['user_id']
-            pool.getConnection((err, connection) => {
-                if( err ) {
-                    console.log(err);
-                    return next(new Error('Something went wrong'));
-                }
-                connection.query(`
-                    UPDATE users
-                    SET ?
-                    WHERE id = ?
-                    AND email = ?
-                `, [ { email_verified: true}, userId, email ], (err, users, fields) => {
+        connection.query(`
+            SELECT * FROM otps
+            WHERE code = ?
+        `, [ token ], (err, otps, fields) => {
+            if( err ) {
+                console.log(err);
+                return next(new Error('Something went wrong'));
+            }
+            let otp = otps[0];
+            if(otp) {
+                let userId = otp['user_id']
+                pool.getConnection((err, connection) => {
                     if( err ) {
                         console.log(err);
                         return next(new Error('Something went wrong'));
                     }
-                    let user = users[0];
-                    if(user && user.email == email.trim().toLowerCase()) {
-                        return res.json({
-                            message: 'Email verified',
-                            status: 200,
-                            data: {
-                                email: user.email,
-                                name: user.name
-                            }
-                        });
-                    }
-                    next(new Error('Invalid token'));
+                    connection.query(`
+                        UPDATE users
+                        SET ?
+                        WHERE id = ?
+                        AND email = ?
+                    `, [ { email_verified: true}, userId, email ], (err, users, fields) => {
+                        if( err ) {
+                            console.log(err);
+                            return next(new Error('Something went wrong'));
+                        }
+                        let user = users[0];
+                        if(user && user.email == email.trim().toLowerCase()) {
+                            return res.json({
+                                message: 'Email verified',
+                                status: 200,
+                                data: {
+                                    email: user.email,
+                                    name: user.name
+                                }
+                            });
+                        }
+                        next(new Error('Invalid token'));
+                    });
+                    connection.release();
                 });
-                connection.release();
-            });
-        } else {
-            next(new Error('Invalid token'));
-        }
+            } else {
+                next(new Error('Invalid token'));
+            }
+        });
     });
 }
 
