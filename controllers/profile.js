@@ -3,7 +3,6 @@ const pool = require('../database/db-pool');
 const updateProfile = (req, res, next) => {
     let userId = req.user.id;
     let { phone, name, password } = req.body;
-    email = email.trim().toLowerCase();
     let user = { }
     if(phone) user.phone = phone;
     if(name) user.name = name;
