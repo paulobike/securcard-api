@@ -10,6 +10,7 @@ module.exports = () => {
                 name VARCHAR(255) NOT NULL,
                 password VARCHAR(255),
                 email VARCHAR(255),
+                phone VARCHAR(255),
                 email_verified Boolean DEFAULT false,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 PRIMARY KEY(id)
