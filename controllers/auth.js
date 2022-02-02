@@ -36,7 +36,7 @@ const login = (req, res, next) => {
                         username: user.username
                     },
                     message: user['email_verified'] == true ? 'Success' : 'Verify email address',
-                    code: user['email_verified'] == true ? 200 : 300
+                    status: user['email_verified'] == true ? 200 : 300
                 });                       
             } else {
                 next(new Error('Invalid credentials'));
