@@ -1,17 +1,12 @@
 const mailer      = require('nodemailer');
 
-const transportOptions = {
+const transporter = mailer.createTransport({
+    service: 'gmail',
     auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS
     }
-}
-if(process.env.MAIL_AUTH == 'service')
-    transportOptions.service = process.env.MAIL_SERVICE
-else
-    transportOptions.host = process.env.MAIL_HOST;
-
-const transporter = mailer.createTransport(transportOptions);
+});
 
 const sendMail = (mail) => {
     return new Promise((resolve,reject)=>{
