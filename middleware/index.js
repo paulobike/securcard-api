@@ -27,12 +27,12 @@ middleware.isLoggedIn = (req, res, next) => {
             let user = users[0];
             if(user) {
                 if (user['email_verified'] == true) {
-                    let error = new Error('Verify email address');
-                    error.status = 300;
-                    next(error);
+                    req.user = user;
+                    return next();
                 }
-                req.user = user;
-                next();
+                let error = new Error('Verify email address');
+                error.status = 300;
+                next(error);
             } else next(loginErr);
         });
         connection.release();
