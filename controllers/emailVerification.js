@@ -108,18 +108,14 @@ const compareToken = async (req, res, next) => {
                             console.log(err);
                             return next(new Error('Something went wrong'));
                         }
-                        let user = users[0];
-                        if(user && user.email == email.trim().toLowerCase()) {
-                            return res.json({
-                                message: 'Email verified',
-                                status: 200,
-                                data: {
-                                    email: user.email,
-                                    name: user.name
-                                }
-                            });
-                        }
-                        next(new Error('Invalid token'));
+                        return res.json({
+                            message: 'Email verified',
+                            status: 200,
+                            data: {
+                                email: user.email,
+                                name: user.name
+                            }
+                        });
                     });
                     connection.release();
                 });
