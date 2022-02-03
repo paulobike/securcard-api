@@ -144,4 +144,44 @@ const getCardImage = (req, res, next, side) => {
     });
 }
 
-module.exports = { getCard, createCard, getCards, getCardImage }
+const deleteCard = (req, res, next) => {
+    let id = req.params.id;
+    let userId = req.user.id;
+
+    pool.getConnection((err, connection) => {
+        if( err ) {
+            console.log(err);
+            return next(new Error('Something went wrong'));
+        }
+        connection.query(`
+            SELECT * FROM cards
+            WHERE id = ?
+        `, [ id ], (err, cards, fields) => {
+            if( err ) {
+                console.log(err);
+                return next(new Error('Something went wrong'));
+            }
+            let card = cards[0];
+            if(card['user_id'] != userId) return next(new Error('Card not found'));
+
+            connection.query(`
+                DELETE FROM cards
+                WHERE id = ?
+            `, [ card['user_id'] ], (err, cards, fields) => {
+                if( err ) {
+                    console.log(err);
+                    return next(new Error('Something went wrong'));
+                }
+
+            });
+            res.json({
+                message: 'success',
+                status: 200,
+                data: card
+            });
+        });
+        connection.release();
+    });
+}
+
+module.exports = { getCard, createCard, getCards, getCardImage, deleteCard }
