@@ -134,8 +134,10 @@ const getCardImage = (req, res, next, side) => {
             if(card['user_id'] != userId) return next(new Error('Card not found'));
 
             res.sendFile(path.join(__dirname, '../uploads', card[side]), error => {
-                console.log(error);
-                next(new Error('Something went wrong'));
+                if(error) {
+                    console.log(error);
+                    next(new Error('Something went wrong'));
+                }                
             });
         });
         connection.release();
