@@ -69,7 +69,7 @@ const createCard = (req, res, next) => {
 
     if(
         !frontFile || !backFile ||
-        frontFile.mimetype.indexOf('image') > -1 || backFile.mimetype.indexOf('image') > -1
+        frontFile[0].mimetype.indexOf('image') > -1 || backFile[0].mimetype.indexOf('image') > -1
     ) {
         let userId = req.user_id;
         let { name } = req.body;
