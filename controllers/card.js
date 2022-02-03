@@ -72,7 +72,7 @@ const createCard = (req, res, next) => {
         !frontFile || !backFile || !frontFile[0] || !backFile[0] ||
         frontFile[0].mimetype.indexOf('image') > -1 || backFile[0].mimetype.indexOf('image') > -1
     ) {
-        let userId = req.user_id;
+        let userId = req.user.id;
         let { name } = req.body;
         if(!name) {
             if(frontFile && frontFile[0]) fs.rmSync(frontFile[0].path);
