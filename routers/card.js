@@ -1,7 +1,7 @@
 const path = require('path');
 const express = require('express');
 const router  = express.Router();
-const { getCard, createCard, getCards } = require('../controllers/card');
+const { getCard, createCard, getCards, getCardImage } = require('../controllers/card');
 const middleware = require('../middleware');
 const multer = require('multer');
 const storage = multer.diskStorage({
@@ -25,6 +25,14 @@ router.get('/', middleware.isLoggedIn, (req, res, next) => {
 
 router.get('/:id', middleware.isLoggedIn, (req, res, next) => {
     getCard(req, res, next);
+});
+
+router.get('/:id/front', middleware.isLoggedIn, (req, res, next) => {
+    getCardImage(req, res, next, 'front');
+});
+
+router.get('/:id/back', middleware.isLoggedIn, (req, res, next) => {
+    getCardImage(req, res, next, 'back');
 });
 
 router.post('/', middleware.isLoggedIn, uploadMiddleware, (req, res, next) => {

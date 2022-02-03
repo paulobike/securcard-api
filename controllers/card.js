@@ -1,3 +1,4 @@
+const path = require('path');
 const fs = require('fs');
 class Errorxxx extends Error {
     constructor(message, status) {
@@ -110,4 +111,33 @@ const createCard = (req, res, next) => {
     }
 }
 
-module.exports = { getCard, createCard, getCards }
+const getCardImage = (req, res, next, side) => {
+    let id = req.params.id;
+    let userId = req.user.id;
+
+    pool.getConnection((err, connection) => {
+        if( err ) {
+            console.log(err);
+            return next(new Error('Something went wrong'));
+        }
+        connection.query(`
+            SELECT * FROM cards
+            WHERE id = ?
+        `, [ id ], (err, cards, fields) => {
+            if( err ) {
+                console.log(err);
+                return next(new Error('Something went wrong'));
+            }
+            let card = cards[0];
+            if(card['user_id'] != userId) return next(new Error('Card not found'));
+
+            res.sendFile(path.join(__dirname, '/uploads', card[side]), error => {
+                console.log(error);
+                next(new Error('Something went wrong'));
+            });
+        });
+        connection.release();
+    });
+}
+
+module.exports = { getCard, createCard, getCards, getCardImage }
