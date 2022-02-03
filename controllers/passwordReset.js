@@ -156,7 +156,7 @@ const resetPassword = (req, res, next) => {
                         SET ?
                         WHERE id = ?
                         AND email = ?
-                    `, [ { password }, userId, email.trim().toLowerCase() ], (err, users, fields) => {
+                    `, [ { password }, otp['user_id'], email.trim().toLowerCase() ], (err, users, fields) => {
                         if( err ) {
                             console.log(err);
                             return next(new Error('Something went wrong'));
