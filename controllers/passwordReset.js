@@ -72,49 +72,54 @@ const verifyToken = (req, res, next) => {
     const token = req.query.token;
     const email = req.query.email;
     if(!token) next(new Error('Invalid token'));
-
-    connection.query(`
-        SELECT * FROM otps
-        WHERE code = ?
-    `, [ token ], (err, otps, fields) => {
+    pool.getConnection((err, connection) => {
         if( err ) {
             console.log(err);
             return next(new Error('Something went wrong'));
         }
-        let otp = otps[0];
-        if(otp) {
-            let userId = otp['user_id']
-            pool.getConnection((err, connection) => {
-                if( err ) {
-                    console.log(err);
-                    return next(new Error('Something went wrong'));
-                }
-                connection.query(`
-                    SELECT * FROM users
-                    WHERE id = ?
-                `, [ userId ], (err, users, fields) => {
+        connection.query(`
+            SELECT * FROM otps
+            WHERE code = ?
+        `, [ token ], (err, otps, fields) => {
+            if( err ) {
+                console.log(err);
+                return next(new Error('Something went wrong'));
+            }
+            let otp = otps[0];
+            if(otp) {
+                let userId = otp['user_id']
+                pool.getConnection((err, connection) => {
                     if( err ) {
                         console.log(err);
                         return next(new Error('Something went wrong'));
                     }
-                    let user = users[0];
-                    if(user && user.email == email.trim().toLowerCase()) {
-                        return res.json({
-                            message: 'success',
-                            status: 200,
-                            data: {
-                                email: user.email,
-                                name: user.name
-                            }
-                        });
-                    }
-                    next(new Error('Invalid token'));
+                    connection.query(`
+                        SELECT * FROM users
+                        WHERE id = ?
+                    `, [ userId ], (err, users, fields) => {
+                        if( err ) {
+                            console.log(err);
+                            return next(new Error('Something went wrong'));
+                        }
+                        let user = users[0];
+                        if(user && user.email == email.trim().toLowerCase()) {
+                            return res.json({
+                                message: 'success',
+                                status: 200,
+                                data: {
+                                    email: user.email,
+                                    name: user.name
+                                }
+                            });
+                        }
+                        next(new Error('Invalid token'));
+                    });
+                    connection.release();
                 });
-                connection.release();
-            });
-        } else {
-            next(new Error('Invalid token'));
-        }
+            } else {
+                next(new Error('Invalid token'));
+            }
+        });
     });
 }
 
@@ -125,50 +130,56 @@ const resetPassword = (req, res, next) => {
     if(!token) next(new Error('Invalid token'));
     if(!password) next(new Error('Password cannot be empty'));
 
-    connection.query(`
-        SELECT * FROM otps
-        WHERE code = ?
-    `, [ token ], (err, otps, fields) => {
+    pool.getConnection((err, connection) => {
         if( err ) {
             console.log(err);
             return next(new Error('Something went wrong'));
         }
-        let otp = otps[0];
-        if(otp) {
-            pool.getConnection((err, connection) => {
-                if( err ) {
-                    console.log(err);
-                    return next(new Error('Something went wrong'));
-                }
-                password = bcrypt.hashSync(password, 10);
-                connection.query(`
-                    UPDATE users
-                    SET ?
-                    WHERE id = ?
-                    AND email = ?
-                `, [ { password }, userId, email.trim().toLowerCase() ], (err, users, fields) => {
+        connection.query(`
+            SELECT * FROM otps
+            WHERE code = ?
+        `, [ token ], (err, otps, fields) => {
+            if( err ) {
+                console.log(err);
+                return next(new Error('Something went wrong'));
+            }
+            let otp = otps[0];
+            if(otp) {
+                pool.getConnection((err, connection) => {
                     if( err ) {
                         console.log(err);
                         return next(new Error('Something went wrong'));
                     }
-                    let user = users[0];
-                    if(user) {
-                        return res.json({
-                            message: 'success',
-                            status: 200,
-                            data: {
-                                email: user.email,
-                                name: user.name
-                            }
-                        });
-                    }
-                    next(new Error('Invalid token'));
+                    password = bcrypt.hashSync(password, 10);
+                    connection.query(`
+                        UPDATE users
+                        SET ?
+                        WHERE id = ?
+                        AND email = ?
+                    `, [ { password }, userId, email.trim().toLowerCase() ], (err, users, fields) => {
+                        if( err ) {
+                            console.log(err);
+                            return next(new Error('Something went wrong'));
+                        }
+                        let user = users[0];
+                        if(user) {
+                            return res.json({
+                                message: 'success',
+                                status: 200,
+                                data: {
+                                    email: user.email,
+                                    name: user.name
+                                }
+                            });
+                        }
+                        next(new Error('Invalid token'));
+                    });
+                    connection.release();
                 });
-                connection.release();
-            });
-        } else {
-            next(new Error('Invalid token'));
-        }
+            } else {
+                next(new Error('Invalid token'));
+            }
+        });
     });
 }
 
