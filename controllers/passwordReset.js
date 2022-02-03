@@ -125,7 +125,7 @@ const verifyToken = (req, res, next) => {
 
 const resetPassword = (req, res, next) => {
     let token = req.body.token;
-    const email = req.query.email;
+    let email = req.body.email;
     let password = req.body.password;
     if(!token) next(new Error('Invalid token'));
     if(!password) next(new Error('Password cannot be empty'));
