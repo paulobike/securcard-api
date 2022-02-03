@@ -55,9 +55,9 @@ const getCards = (req, res, next) => {
                 return next(new Error('Something went wrong'));
             }
             res.json({
-                status: 'success',
-                status_code: 200,
-                message: cards
+                message: 'success',
+                status: 200,
+                data: cards
             });
         });
         connection.release();
