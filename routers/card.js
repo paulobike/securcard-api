@@ -9,7 +9,7 @@ const storage = multer.diskStorage({
         cb(null, path.join(__dirname, '../uploads/cards/' + file.fieldname));
     },
     filename: (req, file, cb) => {
-        let filename = 'user-' + req.user.id + '-' + Date.now() + file.mimetype.split('/')[1];
+        let filename = 'user-' + req.user.id + '-' + Date.now() + '.' + file.mimetype.split('/')[1];
         cb(null, filename);
     }
 });
