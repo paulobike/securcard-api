@@ -167,7 +167,7 @@ const deleteCard = (req, res, next) => {
             connection.query(`
                 DELETE FROM cards
                 WHERE id = ?
-            `, [ card['user_id'] ], (err, result) => {
+            `, [ card.id ], (err, result) => {
                 if( err ) {
                     console.log(err);
                     return next(new Error('Something went wrong'));
