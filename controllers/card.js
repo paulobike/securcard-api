@@ -172,12 +172,17 @@ const deleteCard = (req, res, next) => {
                     console.log(err);
                     return next(new Error('Something went wrong'));
                 }
-
-            });
-            res.json({
-                message: 'success',
-                status: 200,
-                data: card
+                if(result.affectedRows > 0) {
+                    console.log('Purging card files...');
+                    fs.rmSync(path.join(__dirname, '../uploads', card.front));
+                    fs.rmSync(path.join(__dirname, '../uploads', card.back));
+                    console.log('Done!');
+                }
+                res.json({
+                    message: 'success',
+                    status: 200,
+                    data: card
+                });
             });
         });
         connection.release();
