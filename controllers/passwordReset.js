@@ -129,6 +129,7 @@ const resetPassword = (req, res, next) => {
     let password = req.body.password;
     if(!token) next(new Error('Invalid token'));
     if(!password) next(new Error('Password cannot be empty'));
+    if(!email) next(new Error('Invalid account'));
 
     pool.getConnection((err, connection) => {
         if( err ) {
