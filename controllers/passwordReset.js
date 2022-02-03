@@ -157,19 +157,17 @@ const resetPassword = (req, res, next) => {
                         SET ?
                         WHERE id = ?
                         AND email = ?
-                    `, [ { password }, otp['user_id'], email.trim().toLowerCase() ], (err, users, fields) => {
+                    `, [ { password }, otp['user_id'], email.trim().toLowerCase() ], (err, result) => {
                         if( err ) {
                             console.log(err);
                             return next(new Error('Something went wrong'));
                         }
-                        let user = users[0];
-                        if(user) {
+                        if(result.affectedRows > 0) {
                             return res.json({
                                 message: 'success',
                                 status: 200,
                                 data: {
-                                    email: user.email,
-                                    name: user.name
+                                    email: email
                                 }
                             });
                         }
