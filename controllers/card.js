@@ -1,4 +1,5 @@
 const path = require('path');
+const pool = require('../database/db-pool');
 const fs = require('fs');
 class Errorxxx extends Error {
     constructor(message, status) {
@@ -68,7 +69,7 @@ const createCard = (req, res, next) => {
     let backFile = req.files.back;
 
     if(
-        !frontFile || !backFile ||
+        !frontFile || !backFile || !frontFile[0] || !backFile[0] ||
         frontFile[0].mimetype.indexOf('image') > -1 || backFile[0].mimetype.indexOf('image') > -1
     ) {
         let userId = req.user_id;
